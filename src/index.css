@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-cosmic-bg: #050510;
+  --color-cosmic-card: #0a0a1a;
+  --color-cosmic-accent: #00d2ff;
+  --color-cosmic-secondary: #9d50bb;
+}
+
+@layer base {
+  body {
+    @apply antialiased bg-cosmic-bg text-[#e4e3e0] selection:bg-cosmic-accent selection:text-black;
+  }
+
+  /* Animated Stars */
+  .starfield {
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    overflow: hidden;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cosmic-bg;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cosmic-accent/20 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cosmic-accent;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .cosmic-gradient {
+    background: radial-gradient(circle at 50% 50%, rgba(0, 210, 255, 0.05) 0%, transparent 70%);
+  }
+  
+  .nebula-glow {
+    box-shadow: 0 0 40px -10px var(--color-cosmic-accent);
+  }
+}
