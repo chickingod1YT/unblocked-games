@@ -6,7 +6,9 @@
     "url": "https://play2048.co/",
     "thumbnail": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=400&q=80",
     "category": "Puzzle",
-    "featured": true
+    "featured": true,
+    "playCount": 12453,
+    "isHot": false
   },
   {
     "id": "tetris",
@@ -15,7 +17,9 @@
     "url": "https://tetris.com/play-tetris",
     "thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80",
     "category": "Puzzle",
-    "featured": true
+    "featured": true,
+    "playCount": 89201,
+    "isHot": true
   },
   {
     "id": "pacman",
@@ -24,7 +28,9 @@
     "url": "https://www.google.com/logos/2010/pacman10-i.html",
     "thumbnail": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80",
     "category": "Arcade",
-    "featured": false
+    "featured": false,
+    "playCount": 45672,
+    "isHot": true
   },
   {
     "id": "snake",
@@ -33,7 +39,9 @@
     "url": "https://www.google.com/logos/2010/pacman10-i.html",
     "thumbnail": "https://images.unsplash.com/photo-1628277611932-bb9778211074?w=400&q=80",
     "category": "Arcade",
-    "featured": true
+    "featured": true,
+    "playCount": 150234,
+    "isHot": true
   },
   {
     "id": "hextris",
@@ -42,7 +50,9 @@
     "url": "https://hextris.io/",
     "thumbnail": "https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=400&q=80",
     "category": "Puzzle",
-    "featured": false
+    "featured": false,
+    "playCount": 12890,
+    "isHot": false
   },
   {
     "id": "flappy-bird",
@@ -51,6 +61,8 @@
     "url": "https://flappybird.io/",
     "thumbnail": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&q=80",
     "category": "Arcade",
-    "featured": false
+    "featured": false,
+    "playCount": 67891,
+    "isHot": false
   }
 ]

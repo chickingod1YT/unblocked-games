@@ -18,7 +18,9 @@ import {
   Telescope,
   Sparkles,
   Orbit,
-  Star
+  Star,
+  Flame,
+  Users
 } from 'lucide-react';
 import gamesData from './data/games.json';
 
@@ -36,6 +38,10 @@ export default function App() {
     return gamesData.filter(game => game.featured);
   }, []);
 
+  const hotGames = useMemo(() => {
+    return [...gamesData].filter(g => g.isHot || g.playCount > 50000).sort((a, b) => b.playCount - a.playCount).slice(0, 4);
+  }, []);
+
   const filteredGames = useMemo(() => {
     return gamesData.filter(game => {
       const matchesSearch = game.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -44,6 +50,12 @@ export default function App() {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, activeCategory]);
+
+  const formatStats = (num) => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num;
+  };
 
   return (
     <div className="min-h-screen bg-cosmic-bg text-[#e4e3e0] font-sans selection:bg-cosmic-accent selection:text-black">
@@ -173,6 +185,46 @@ export default function App() {
             </section>
           )}
 
+          {/* Hot Games Section */}
+          {searchQuery === '' && activeCategory === 'All' && hotGames.length > 0 && (
+            <section className="mb-20">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xs font-mono uppercase tracking-[0.5em] opacity-40 flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-[#ff4444] animate-pulse" /> THERMAL_TRENDS
+                  </h2>
+                  <div className="h-[1px] w-32 bg-gradient-to-r from-[#ff4444]/20 to-transparent" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                {hotGames.map((game, idx) => (
+                  <motion.div
+                    key={`hot-${game.id}`}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => setSelectedGame(game)}
+                    className="group relative cursor-pointer border border-[#ff4444]/10 bg-cosmic-card/40 backdrop-blur-sm p-4 hover:border-[#ff4444]/40 transition-all overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-100 transition-opacity">
+                       <span className="text-[40px] font-black text-white pointer-events-none">0{idx + 1}</span>
+                    </div>
+                    <div className="relative z-10 space-y-3">
+                      <div className="w-10 h-10 border border-[#ff4444]/30 rounded-lg flex items-center justify-center bg-[#ff4444]/5">
+                        <Flame className="w-5 h-5 text-[#ff4444]" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold uppercase tracking-tight text-sm truncate">{game.title}</h3>
+                        <div className="flex items-center gap-1.5 opacity-40 mt-1">
+                          <Users className="w-3 h-3" />
+                          <span className="font-mono text-[9px] uppercase">{formatStats(game.playCount)} ACTIVE</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Database Label */}
           <div className="flex items-center gap-4 mb-8">
             <h2 className="text-xs font-mono uppercase tracking-[0.5em] opacity-40">
@@ -217,9 +269,15 @@ export default function App() {
                   </div>
 
                   <div className="p-6 space-y-3 relative">
-                    <h3 className="text-lg font-bold uppercase tracking-wide group-hover:text-cosmic-accent transition-colors truncate">
-                      {game.title}
-                    </h3>
+                    <div>
+                      <h3 className="text-lg font-bold uppercase tracking-wide group-hover:text-cosmic-accent transition-colors truncate">
+                        {game.title}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1 opacity-30">
+                        <Users className="w-3 h-3" />
+                        <span className="font-mono text-[9px] uppercase tracking-wider">{formatStats(game.playCount)} PLAYERS</span>
+                      </div>
+                    </div>
                     <p className="text-[13px] opacity-40 line-clamp-2 leading-relaxed h-[36px]">
                       {game.description}
                     </p>
