@@ -187,7 +187,7 @@ export default function App() {
 
           {/* Hot Games Section */}
           {searchQuery === '' && activeCategory === 'All' && hotGames.length > 0 && (
-            <section className="mb-20">
+            <section id="hot-games-section" className="mb-20">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
                   <h2 className="text-xs font-mono uppercase tracking-[0.5em] opacity-40 flex items-center gap-2">
@@ -196,10 +196,11 @@ export default function App() {
                   <div className="h-[1px] w-32 bg-gradient-to-r from-[#ff4444]/20 to-transparent" />
                 </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+              <div id="hot-games-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
                 {hotGames.map((game, idx) => (
                   <motion.div
                     key={`hot-${game.id}`}
+                    id={`hot-game-${game.id}`}
                     whileHover={{ scale: 1.05 }}
                     onClick={() => setSelectedGame(game)}
                     className="group relative cursor-pointer border border-[#ff4444]/10 bg-cosmic-card/40 backdrop-blur-sm p-4 hover:border-[#ff4444]/40 transition-all overflow-hidden"
