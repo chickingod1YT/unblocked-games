@@ -28,14 +28,35 @@ export default function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const [scrolled, setScrolled] = useState(false);
   const gameContainerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
+    
+    // Load recently played
+    const saved = localStorage.getItem('recentlyPlayed');
+    if (saved) {
+      try {
+        setRecentlyPlayed(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse recently played', e);
+      }
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const addToRecentlyPlayed = (gameId) => {
+    setRecentlyPlayed(prev => {
+      const filtered = prev.filter(id => id !== gameId);
+      const updated = [gameId, ...filtered].slice(0, 10);
+      localStorage.setItem('recentlyPlayed', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const categories = useMemo(() => {
     return ['All', ...new Set(gamesData.map(g => g.category))];
@@ -53,6 +74,19 @@ export default function App() {
   const featuredGames = useMemo(() => {
     return gamesData.filter(game => game.featured);
   }, []);
+
+  const recentGames = useMemo(() => {
+    return recentlyPlayed
+      .map(id => gamesData.find(g => g.id === id))
+      .filter(Boolean);
+  }, [recentlyPlayed]);
+
+  const handleGameSelect = (game) => {
+    setSelectedGame(game);
+    if (game) {
+      addToRecentlyPlayed(game.id);
+    }
+  };
 
   const formatStats = (num) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -232,7 +266,7 @@ export default function App() {
                       key={game.id}
                       whileHover={{ scale: 1.02 }}
                       className="group relative h-[300px] rounded-3xl overflow-hidden border border-white/5 cursor-pointer shadow-2xl"
-                      onClick={() => setSelectedGame(game)}
+                      onClick={() => handleGameSelect(game)}
                     >
                       <img 
                         src={game.image} 
@@ -251,6 +285,40 @@ export default function App() {
                         <h3 className="text-3xl font-bold uppercase italic tracking-tight mb-2 group-hover:text-cosmic-accent transition-colors">{game.title}</h3>
                         <p className="text-sm opacity-60 line-clamp-1 font-mono tracking-tight uppercase max-w-md">{game.description}</p>
                       </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Recently Played Section */}
+            {activeCategory === 'All' && !searchQuery && recentGames.length > 0 && (
+              <section className="mb-20">
+                <div className="flex items-center gap-3 mb-8 opacity-40">
+                  <Clock className="w-5 h-5 text-cosmic-accent" />
+                  <h2 className="text-xs font-mono uppercase tracking-[0.3em]">Temporal_History</h2>
+                </div>
+                <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
+                  {recentGames.map(game => (
+                    <motion.div
+                      key={`recent-${game.id}`}
+                      whileHover={{ y: -5 }}
+                      onClick={() => handleGameSelect(game)}
+                      className="flex-shrink-0 w-48 group cursor-pointer"
+                    >
+                      <div className="relative h-32 rounded-2xl overflow-hidden mb-3 border border-white/5">
+                        <img 
+                          src={game.image} 
+                          className="w-full h-full object-cover transition-transform group-hover:scale-110" 
+                          alt={game.title} 
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Play className="w-8 h-8 text-white fill-current" />
+                        </div>
+                      </div>
+                      <h4 className="text-xs font-bold uppercase tracking-wide group-hover:text-cosmic-accent transition-colors truncate">{game.title}</h4>
+                      <p className="text-[9px] font-mono opacity-20 uppercase tracking-widest">{game.category}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -276,7 +344,7 @@ export default function App() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
                       whileHover={{ y: -10 }}
-                      onClick={() => setSelectedGame(game)}
+                      onClick={() => handleGameSelect(game)}
                       className="group bg-cosmic-card/30 border border-white/5 rounded-3xl p-4 cursor-pointer hover:border-cosmic-accent/30 hover:bg-cosmic-card/50 transition-all shadow-xl backdrop-blur-sm"
                     >
                       <div className="relative h-48 rounded-2xl overflow-hidden mb-6">
@@ -385,7 +453,8 @@ export default function App() {
                 <iframe 
                   id="innerFrame"
                   name="innerFrame"
-                  src={selectedGame.url}
+                  src={selectedGame.url && !selectedGame.html ? selectedGame.url : undefined}
+                  srcDoc={selectedGame.html}
                   className="relative z-10 w-full h-full border-none"
                   title={selectedGame.title}
                   loading="lazy"
