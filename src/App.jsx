@@ -20,18 +20,12 @@ import {
   Share2,
   Play,
   X,
-  MessageSquarePlus,
-  Shield,
-  Globe,
-  RefreshCw
+  MessageSquarePlus
 } from 'lucide-react';
 import gamesData from './data/games.json';
 
 export default function App() {
   const [selectedGame, setSelectedGame] = useState(null);
-  const [showProxy, setShowProxy] = useState(false);
-  const [proxyUrl, setProxyUrl] = useState('');
-  const [activeProxyUrl, setActiveProxyUrl] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
@@ -211,16 +205,6 @@ export default function App() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <button 
-              onClick={() => {
-                setShowProxy(true);
-                setSelectedGame(null);
-              }}
-              className="flex items-center gap-2 px-6 py-3 bg-cosmic-secondary/10 border border-cosmic-secondary/20 rounded-full text-xs font-bold uppercase tracking-widest text-cosmic-secondary hover:bg-cosmic-secondary hover:text-white transition-all group"
-            >
-              <Shield className="w-4 h-4" />
-              Access Proxy
-            </button>
             <a 
               href={GAME_REQUEST_URL}
               target="_blank"
@@ -233,7 +217,7 @@ export default function App() {
           </div>
         </header>
 
-        {!selectedGame && !showProxy ? (
+        {!selectedGame ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -414,102 +398,6 @@ export default function App() {
                 </div>
               )}
             </section>
-          </motion.div>
-        ) : showProxy ? (
-          /* Proxy View */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-12 overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-cosmic-bg/95 backdrop-blur-3xl" onClick={() => setShowProxy(false)} />
-            
-            <div className="relative w-full h-full max-w-6xl bg-cosmic-card border border-cosmic-secondary/20 md:rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl">
-              {/* Proxy Header */}
-              <div className="flex flex-col border-b border-white/5 bg-black/40">
-                <div className="flex items-center justify-between p-6">
-                  <button 
-                    onClick={() => setShowProxy(false)}
-                    className="flex items-center gap-3 text-xs font-mono uppercase tracking-widest opacity-40 hover:opacity-100 hover:text-cosmic-secondary transition-all group"
-                  >
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back_to_Archives
-                  </button>
-                  <div className="flex items-center gap-3">
-                    <div className="hidden md:flex flex-col items-end mr-4">
-                      <span className="text-[10px] font-mono text-cosmic-secondary uppercase tracking-[0.2em] font-bold">Proxy_Relay_Active</span>
-                      <span className="text-[8px] font-mono opacity-20 uppercase tracking-widest">Signal_Encrypted</span>
-                    </div>
-                    <button onClick={() => setShowProxy(false)} className="p-3 bg-cosmic-secondary/10 text-cosmic-secondary rounded-xl hover:bg-cosmic-secondary hover:text-white transition-all border border-cosmic-secondary/20">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="px-6 pb-6 pt-0">
-                  <form 
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      let url = proxyUrl.trim();
-                      if (url && !url.startsWith('http')) url = 'https://' + url;
-                      setActiveProxyUrl(url);
-                    }}
-                    className="flex gap-4"
-                  >
-                    <div className="relative flex-1 group">
-                      <Globe className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 opacity-20 group-focus-within:opacity-100 group-focus-within:text-cosmic-secondary transition-all" />
-                      <input 
-                        type="text"
-                        placeholder="ENTER_DESTINATION_COORDINATES (URL)..."
-                        value={proxyUrl}
-                        onChange={(e) => setProxyUrl(e.target.value)}
-                        className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 pl-16 pr-8 text-sm font-mono tracking-wider focus:outline-none focus:border-cosmic-secondary/50 focus:ring-4 focus:ring-cosmic-secondary/5 transition-all outline-none"
-                      />
-                    </div>
-                    <button 
-                      type="submit"
-                      className="px-8 py-4 bg-cosmic-secondary text-white rounded-2xl font-bold uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-cosmic-secondary/20 flex items-center gap-2"
-                    >
-                      Establish_Link <RefreshCw className="w-4 h-4" />
-                    </button>
-                  </form>
-                </div>
-              </div>
-
-              {/* Proxy Viewport */}
-              <div className="relative flex-1 bg-black group">
-                {!activeProxyUrl ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-cosmic-card z-0">
-                    <div className="flex flex-col items-center text-center gap-8 max-w-md px-8">
-                      <motion.div 
-                        animate={{ 
-                          scale: [1, 1.1, 1],
-                          opacity: [0.3, 0.6, 0.3]
-                        }} 
-                        transition={{ duration: 4, repeat: Infinity }}
-                        className="p-8 rounded-full bg-cosmic-secondary/5 border border-cosmic-secondary/20"
-                      >
-                        <Shield className="w-16 h-16 text-cosmic-secondary" />
-                      </motion.div>
-                      <div className="space-y-4">
-                        <h3 className="text-xl font-bold uppercase italic tracking-widest text-cosmic-secondary">Awaiting_Navigation</h3>
-                        <p className="font-mono text-xs opacity-40 leading-relaxed uppercase tracking-widest">
-                          Enter a URL above to establish a secure galactic uplink. This feature uses a web relay to access archives outside the standard sector.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <iframe 
-                    src={activeProxyUrl}
-                    className="w-full h-full border-none bg-white font-sans"
-                    title="Galactic Proxy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer"
-                    sandbox="allow-forms allow-modals allow-same-origin allow-scripts allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
-                  />
-                )}
-              </div>
-            </div>
           </motion.div>
         ) : (
           /* Game Detail View */
