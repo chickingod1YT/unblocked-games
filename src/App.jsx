@@ -404,25 +404,34 @@ export default function App() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-12 overflow-hidden"
+            className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-8 overflow-hidden"
           >
             <div className="absolute inset-0 bg-cosmic-bg/95 backdrop-blur-3xl" onClick={() => setSelectedGame(null)} />
             
             <div className="relative w-full h-full max-w-6xl bg-cosmic-card border border-cosmic-accent/20 md:rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl">
               {/* Game Viewport Header */}
-              <div className="flex items-center justify-between p-6 border-b border-white/5 bg-black/40">
+              <div className="flex items-center justify-between p-4 md:p-6 border-b border-white/5 bg-black/40">
                 <button 
                   onClick={() => setSelectedGame(null)}
                   className="flex items-center gap-3 text-xs font-mono uppercase tracking-widest opacity-40 hover:opacity-100 hover:text-cosmic-accent transition-all group"
                 >
-                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back_to_Archives
+                  <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
                 </button>
                 <div className="flex items-center gap-6">
-                  <div className="hidden md:flex items-center gap-8 text-[10px] font-mono opacity-30 uppercase tracking-[0.2em]">
-                    <span className="flex items-center gap-2"><Trophy className="w-3 h-3 text-cosmic-accent" /> Rating: {selectedGame.rating}</span>
-                    <span className="flex items-center gap-2"><Orbit className="w-3 h-3 text-cosmic-secondary" /> Plays: {formatStats(selectedGame.playCount)}</span>
+                  <div className="hidden lg:flex items-center gap-8 text-[10px] font-mono opacity-30 uppercase tracking-[0.2em]">
+                    <span className="flex items-center gap-2"><Trophy className="w-3 h-3 text-cosmic-accent" /> {selectedGame.rating}</span>
+                    <span className="flex items-center gap-2"><Orbit className="w-3 h-3 text-cosmic-secondary" /> {formatStats(selectedGame.playCount)}</span>
                   </div>
                   <div className="flex items-center gap-3">
+                    <div className="hidden md:block group/tip relative">
+                      <div className="p-3 bg-white/5 rounded-xl opacity-40 hover:opacity-100 cursor-help">
+                        <MessageSquarePlus className="w-4 h-4" />
+                      </div>
+                      <div className="absolute bottom-full right-0 mb-4 w-64 p-4 bg-black/90 border border-cosmic-accent/20 rounded-2xl text-[10px] uppercase font-mono leading-relaxed opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-opacity z-50">
+                        <p className="text-cosmic-accent mb-2">Game not loading?</p>
+                        <p className="opacity-60">Some browsers block game storage in iframes. Try enabling 3rd-party cookies or disabling tracking prevention for this site.</p>
+                      </div>
+                    </div>
                     <button 
                       onClick={handleShare}
                       className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors opacity-40 hover:opacity-100"
@@ -447,7 +456,7 @@ export default function App() {
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}>
                       <Orbit className="w-16 h-16 text-cosmic-accent" />
                     </motion.div>
-                    <p className="font-mono text-sm tracking-[0.4em] animate-pulse">ESTABLISHING_UPLINK...</p>
+                    <p className="font-mono text-sm tracking-[0.4em] animate-pulse uppercase">Establishing_Relay...</p>
                   </div>
                 </div>
                 <iframe 
@@ -466,15 +475,20 @@ export default function App() {
                 />
               </div>
 
+              {/* Mobile Troubleshooting Tip */}
+              <div className="md:hidden px-6 py-2 bg-cosmic-accent/5 border-t border-white/5 text-[8px] font-mono opacity-40 uppercase text-center italic">
+                Tip: Enable 3rd-party cookies if the game fails to initialize.
+              </div>
+
               {/* Game Info Footer */}
-              <div className="p-8 bg-black/60 border-t border-white/5">
-                <div className="flex flex-col md:flex-row justify-between gap-8">
-                  <div className="space-y-4">
-                    <h2 className="text-3xl font-bold italic uppercase tracking-tight text-cosmic-accent">{selectedGame.title}</h2>
-                    <p className="text-sm opacity-50 max-w-2xl font-mono uppercase tracking-tight leading-relaxed">{selectedGame.description}</p>
+              <div className="p-6 md:p-8 bg-black/60 border-t border-white/5">
+                <div className="flex flex-col md:flex-row justify-between gap-6">
+                  <div className="space-y-3">
+                    <h2 className="text-2xl md:text-3xl font-bold italic uppercase tracking-tight text-cosmic-accent">{selectedGame.title}</h2>
+                    <p className="text-xs md:text-sm opacity-50 max-w-2xl font-mono uppercase tracking-tight leading-relaxed">{selectedGame.description}</p>
                   </div>
-                  <div className="flex flex-col items-end gap-6 min-w-[200px]">
-                    <span className="text-[10px] font-mono border border-cosmic-secondary/40 text-cosmic-secondary px-4 py-2 rounded-full uppercase tracking-widest">{selectedGame.category} NODE</span>
+                  <div className="flex flex-col md:items-end gap-3 min-w-[150px]">
+                    <span className="text-[10px] font-mono border border-cosmic-secondary/40 text-cosmic-secondary px-4 py-2 rounded-full uppercase tracking-widest text-center">{selectedGame.category} NODE</span>
                   </div>
                 </div>
               </div>
